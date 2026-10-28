@@ -42,3 +42,33 @@
 Printer Bluetooth, kamera/foto, tautan pantau (`lacak.html`), cadangan Drive harian, dan jam server (zona WIB) hanya bisa dipastikan di perangkat dan Google Anda sendiri. Coba 1 nota uji dari awal sampai *Diambil*, lalu hapus.
 
 > Sandi pengguna tersimpan apa adanya di sheet **Pengguna**. Jangan bagikan akses edit Sheet ke siapa pun selain Owner.
+
+## E. Pengingat tim (tab Nota)
+- **📣 Pengingat tim** (Owner & Admin depan): centang isi (unit belum dicek, menunggu persetujuan/dikerjakan, selesai belum diambil, stok menipis, belum absen), tambah catatan, tekan **Kirim ke WhatsApp** → pilih grup tim. Isi pesan dihitung otomatis dari data saat ini.
+- **Pengumuman untuk tim** (Owner): tulis pengumuman untuk Semua / Teknisi / Admin depan. Muncul sebagai banner di aplikasi anggota tim sampai ia menekan “Sudah saya baca” (status baca tersimpan di HP masing-masing; Owner tidak melihat siapa yang sudah baca). Anggota menerimanya setelah aplikasi sinkron.
+- Tidak ada notifikasi dorong ke HP: pengingat dibaca saat aplikasi dibuka atau lewat pesan WhatsApp yang Anda kirim.
+
+## F. Kondisi awal unit & laporan untuk pelanggan
+- Saat terima unit isi **Catatan kondisi awal** (mis. retak sudut kiri atas) dan ambil foto (maks. 4, disimpan di Google Drive toko).
+- Catatan kondisi ikut tercetak di nota.
+- Di tab Nota › buka nota › kotak **Kondisi awal unit**: tombol **Bagikan laporan kondisi awal** membuat satu gambar (data unit, catatan, foto, tanda tangan) yang bisa dikirim ke WhatsApp pelanggan sebagai bukti kondisi saat diterima. Foto tidak dicetak di nota thermal.
+
+## G. Form penerimaan unit lengkap
+Isian di Input Data (semua opsional, cukup ketuk): kunci layar (tombol Tidak ada / Sandi-PIN / Pola), jenis perangkat, warna, kelengkapan yang diserahkan, kondisi fisik, kondisi unit saat diterima, fungsi bermasalah, akun terkunci (iCloud/Google/FRP), riwayat servis, prioritas, estimasi selesai, catatan kondisi awal, foto, tanda tangan. Bisa diubah/dilengkapi lagi di tab Nota › kotak “Kelengkapan & kondisi unit”. Yang tercetak di nota dan laporan kondisi awal: jenis/warna, kelengkapan, kondisi fisik, kondisi saat diterima, fungsi bermasalah, estimasi. Akun terkunci, riwayat servis dan prioritas hanya untuk internal.
+
+## H. Kunci perangkat (login lebih aman)
+- Tiap perangkat membuat **Kode Perangkat** acak (tampil di layar login, mis. `AB12-CD34`). Teknisi dan Admin depan **hanya bisa masuk dari perangkat yang disetujui Owner**.
+- Alur: staf mencoba masuk (sandi benar) → perangkat tercatat “Menunggu” → Owner buka **Atur › Perangkat** → pilih ikatan (satu akun tertentu, **Semua teknisi**, atau **Semua admin depan**) → **Setujui**. Staf masuk lagi.
+- Perangkat kasir hanya bisa dipakai akun kasir; perangkat teknisi hanya akun teknisi; perangkat yang terikat satu akun tidak bisa dipakai akun lain.
+- Sesi terikat ke perangkat: token yang disalin ke HP/PC lain tidak berlaku. Owner bisa **Blokir** atau **Hapus** perangkat kapan saja — staf di perangkat itu langsung dikeluarkan.
+- Hanya Owner yang bisa mengatur. Kunci staf bisa dimatikan sementara (kotak centang di panel). **Kunci Owner** (opsional, default mati) mengikat akun Owner ke perangkat tertentu. Terkunci? Jalankan `bukaKunciPerangkatOwner` (atau `bukaSemuaKunciPerangkat`) di editor Apps Script.
+- Daftar perangkat juga ada di sheet **Perangkat**; setiap persetujuan/penolakan tercatat di Aktivitas.
+- Batas: ID perangkat disimpan di browser/aplikasi (bukan nomor seri hardware). Hapus data browser = perangkat dianggap baru dan perlu disetujui lagi. Setelah memasang versi ini, semua staf harus masuk ulang dan disetujui sekali.
+
+## I. Hak akses per peran & sistem pendapatan teknisi
+| Peran | Menu | Batas |
+|---|---|---|
+| **Owner** | Input, Nota, Stok, **Absen**, Gaji, Biaya, Laporan, Atur (Toko & tarif, Pengguna, **Perangkat**, Printer, Sheets, Data, Aktivitas, SOP, Tata tertib) | Akses penuh ke semua menu |
+| **Admin depan** | Input Data, Nota, Stok (lihat), Absen, SOP, Printer/Tampilan; kartu **Tugas hari ini** di Input Data | Tidak melihat gaji, kasbon, biaya toko, laporan, laba, modal stok, tarif bagi hasil; tidak mengelola pengguna/perangkat. Mengubah/membatalkan nota selesai wajib PIN Owner; hapus permanen hanya Owner. Server hanya menerima data Nota darinya |
+| **Teknisi** | Ringkasan, Pekerjaan, Absen, Kasbon, SOP, Tertib | Hanya nota dan penghasilan miliknya sendiri; tanpa data kontak pelanggan, foto, atau gaji orang lain |
+- **Sistem pendapatan teknisi** (Owner, Atur › Toko & tarif, per teknisi, termasuk Teknisi 2): **Bagi hasil saja**, **Gaji pokok + bagi hasil**, atau **Gaji pokok saja**. Pindah mode tidak menghapus persentase lama (dipulihkan bila kembali ke bagi hasil). Perubahan berlaku untuk nota baru; nota lama memakai % saat dibuat. Gaji pokok masuk perhitungan Gaji, Laporan, dan dashboard teknisi yang bersangkutan.
