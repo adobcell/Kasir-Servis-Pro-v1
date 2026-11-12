@@ -432,18 +432,18 @@ function custList(){var seen={},out=[];
  txs.slice().sort(function(a,b){return(b.ts||'').localeCompare(a.ts||'');}).forEach(function(t){var k=(t.customer||'').trim().toLowerCase();if(!k||seen[k])return;seen[k]=1;out.push({name:t.customer.trim(),phone:t.phone||''});});
  return out;}
 
-function loadPrefs(){try{PREFS=Object.assign(defaultPrefs(),JSON.parse(localStorage.getItem('kp-prefs')||'{}'));}catch(e){}}
-function savePrefs(){try{localStorage.setItem('kp-prefs',JSON.stringify(PREFS));}catch(e){}}
+function loadPrefs(){try{PREFS=Object.assign(defaultPrefs(),JSON.parse(localStorage.getItem('kpn-prefs')||'{}'));}catch(e){}}
+function savePrefs(){try{localStorage.setItem('kpn-prefs',JSON.stringify(PREFS));}catch(e){}}
 function applyTheme(){
  var id=PREFS.theme;
  if(id==='auto')id=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'malam':'hijau';
  var r=document.documentElement;r.setAttribute('data-tema',id);r.setAttribute('data-fs',PREFS.fs);
  var th=THEMES.find(function(x){return x[0]===id;}),m=document.querySelector('meta[name=theme-color]');if(m&&th)m.setAttribute('content',th[2]);}
 
-function idbOpen(){return new Promise(function(res,rej){var r=indexedDB.open('kasir-pro'+ns(),2);r.onupgradeneeded=function(){var db=r.result;if(!db.objectStoreNames.contains('docs'))db.createObjectStore('docs',{keyPath:'k'});if(!db.objectStoreNames.contains('pics'))db.createObjectStore('pics',{keyPath:'k'});};r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};});}
+function idbOpen(){return new Promise(function(res,rej){var r=indexedDB.open('kasirn-pro'+ns(),2);r.onupgradeneeded=function(){var db=r.result;if(!db.objectStoreNames.contains('docs'))db.createObjectStore('docs',{keyPath:'k'});if(!db.objectStoreNames.contains('pics'))db.createObjectStore('pics',{keyPath:'k'});};r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};});}
 function idbAll(){return new Promise(function(res,rej){var q=IDB.transaction('docs','readonly').objectStore('docs').getAll();q.onsuccess=function(){res(q.result);};q.onerror=function(){rej(q.error);};});}
 function idbPut(k,v){try{IDB.transaction('docs','readwrite').objectStore('docs').put({k:k,v:v});}catch(e){}}
-function persist(k){if(IDB)idbPut(k,DOCS[k]);else try{localStorage.setItem('kp-fallback'+ns(),JSON.stringify(DOCS));}catch(e){}}
+function persist(k){if(IDB)idbPut(k,DOCS[k]);else try{localStorage.setItem('kpn-fallback'+ns(),JSON.stringify(DOCS));}catch(e){}}
 function rebuild(){
  txs=[];exps=[];kass=[];stks=[];abss=[];_usedC=null;var c=null;
  Object.keys(DOCS).forEach(function(k){var o=DOCS[k];if(!o||o.deleted)return;if(k.indexOf('tx/')===0)txs.push(o);else if(k.indexOf('exp/')===0)exps.push(o);else if(k.indexOf('kas/')===0)kass.push(o);else if(k.indexOf('stk/')===0)stks.push(o);else if(k.indexOf('abs/')===0)abss.push(o);else if(k==='cfg/main')c=o;});
@@ -514,7 +514,7 @@ function pubPool(){
  if(ch){cfg.rajinPool=np;cfg.tgtProg=tp;ppBusy=true;try{saveCfg();}finally{ppBusy=false;}}}
 function findTx(id){return txs.find(function(x){return x.id===id;});}
 
-function syncKey(){return'kp-sync'+ns();}
+function syncKey(){return'kpn-sync'+ns();}
 function loadSync(){try{var o=JSON.parse(localStorage.getItem(syncKey())||'{}');delete o.token;SYNC=Object.assign(SYNC,o);}catch(e){}SYNC.state='idle';if(!SYNC.url&&DEFAULT_URL)SYNC.url=DEFAULT_URL;}
 function saveSync(){try{localStorage.setItem(syncKey(),JSON.stringify({url:SYNC.url,since:SYNC.since,pending:SYNC.pending,last:SYNC.last,linked:SYNC.linked}));}catch(e){}}
 function mark(k){if(!canWrite())return;if(isFront()&&k.indexOf('tx/')!==0)return;SYNC.pending[k]=1;saveSync();scheduleSync(3000);}
@@ -1155,8 +1155,8 @@ var SOP_QUIZ=[
  {q:'Biaya tambahan di luar estimasi awal boleh dikerjakan setelah…',o:['Teknisi yakin itu diperlukan','Pelanggan menyetujui lewat admin','Unit sudah selesai'],a:1,why:'Persetujuan biaya dari pelanggan wajib sebelum pengerjaan.'}];
 
 function sopNeed(){return SOP_VER+'.'+(+cfg.sopRev||0);}
-function sopRec(){try{return JSON.parse(localStorage.getItem('kp-sop-'+(AUTH&&AUTH.user))||'null');}catch(e){return null;}}
-function sopSaveRec(r){try{localStorage.setItem('kp-sop-'+AUTH.user,JSON.stringify(r));}catch(e){}}
+function sopRec(){try{return JSON.parse(localStorage.getItem('kpn-sop-'+(AUTH&&AUTH.user))||'null');}catch(e){return null;}}
+function sopSaveRec(r){try{localStorage.setItem('kpn-sop-'+AUTH.user,JSON.stringify(r));}catch(e){}}
 function sopDays(){var d=cfg.sopDays;return d==null?30:+d||0;}
 function sopFresh(r,days){return !!r&&r.ver===sopNeed()&&(!days||(Date.now()-(+r.at||0))<days*86400000);}
 function sopOKv(){return sopFresh(sopRec(),sopDays());}
@@ -1460,9 +1460,9 @@ function vAtur(){
  return'<section class="card"><div class="chips">'+tabs.map(function(t){return'<button class="chip" data-act="atur" data-v="'+t[0]+'" aria-pressed="'+(aturTab===t[0])+'">'+esc(t[1])+'</button>';}).join('')+'</div><p class="muted small" style="margin:8px 0 0">'+(isFront()?'Pengaturan printer dan tampilan untuk perangkat ini.':'Semua isian di menu Atur tersimpan otomatis begitu diubah.')+'</p></section>'+aturBody();}
 
 /* ===== Login, keluar, dan kelola pengguna ===== */
-function saveAuth(){try{localStorage.setItem('kp-auth',JSON.stringify(AUTH));}catch(e){}}
-function loadAuth(){try{var a=JSON.parse(localStorage.getItem('kp-auth')||'null');if(a&&(a.local||(a.session&&(a.role==='admin'||a.role==='front'||a.role==='teknisi'))))AUTH=a;}catch(e){}}
-function sessionExpired(){var u=AUTH&&AUTH.user;try{localStorage.removeItem('kp-auth');}catch(e){}AUTH=null;loginD.user=u&&u!=='lokal'?u:'';loginD.pass='';loginD.err=DEVLOST?'Perangkat ini tidak lagi diizinkan oleh Owner (atau sesi dipindah). Hubungi Owner.':'Sesi berakhir. Silakan masuk lagi.';DEVLOST=0;render();}
+function saveAuth(){try{localStorage.setItem('kpn-auth',JSON.stringify(AUTH));}catch(e){}}
+function loadAuth(){try{var a=JSON.parse(localStorage.getItem('kpn-auth')||'null');if(a&&(a.local||(a.session&&(a.role==='admin'||a.role==='front'||a.role==='teknisi'))))AUTH=a;}catch(e){}}
+function sessionExpired(){var u=AUTH&&AUTH.user;try{localStorage.removeItem('kpn-auth');}catch(e){}AUTH=null;loginD.user=u&&u!=='lokal'?u:'';loginD.pass='';loginD.err=DEVLOST?'Perangkat ini tidak lagi diizinkan oleh Owner (atau sesi dipindah). Hubungi Owner.':'Sesi berakhir. Silakan masuk lagi.';DEVLOST=0;render();}
 async function doLogin(){
  if(loginD.busy)return;
  var url=(loginD.editUrl||!SYNC.url?loginD.url:SYNC.url).trim(),u=String(loginD.user||'').trim().toLowerCase(),p=loginD.pass||'';
@@ -1473,10 +1473,10 @@ async function doLogin(){
  try{
   var r=await post(url,{action:'login',user:u,pass:p});
   if(!r||!r.ok){loginD.busy=false;loginD.err=errMsg(r&&r.error);loginD.pass='';render();return;}
-  var nsr=(r.role==='teknisi'||r.role==='front'),key='kp-sync'+(nsr?'-'+r.user:''),o={};
+  var nsr=(r.role==='teknisi'||r.role==='front'),key='kpn-sync'+(nsr?'-'+r.user:''),o={};
   try{o=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
   o.url=url;delete o.token;localStorage.setItem(key,JSON.stringify(o));
-  if(nsr){try{var o2=JSON.parse(localStorage.getItem('kp-sync')||'{}');o2.url=url;localStorage.setItem('kp-sync',JSON.stringify(o2));}catch(e){}}
+  if(nsr){try{var o2=JSON.parse(localStorage.getItem('kpn-sync')||'{}');o2.url=url;localStorage.setItem('kpn-sync',JSON.stringify(o2));}catch(e){}}
   AUTH={user:r.user,name:r.name,role:r.role,staffId:r.staffId,session:r.session,local:false};saveAuth();
   loginD.pass='';location.reload();
  }catch(e){loginD.busy=false;loginD.err='Tidak dapat menghubungi server. Periksa internet dan alamat server.';render();}}
@@ -1486,13 +1486,13 @@ function doLogout(){
   if(canWrite()&&pendingCount())toast(pendingCount()+' data belum tersinkron. Ketuk lagi jika tetap ingin keluar.');
   setTimeout(function(){if(logoutArmed){logoutArmed=false;if(AUTH)render();}},4000);return;}
  var wipe=isTech()||isFront(),u=AUTH.user;
- try{localStorage.removeItem('kp-auth');}catch(e){}
+ try{localStorage.removeItem('kpn-auth');}catch(e){}
  if(!wipe){location.reload();return;}
  /* Akun teknisi: hapus salinan data di perangkat ini saat keluar. */
- try{localStorage.removeItem('kp-sync-'+u);localStorage.removeItem('kp-fallback-'+u);}catch(e){}
+ try{localStorage.removeItem('kpn-sync-'+u);localStorage.removeItem('kpn-fallback-'+u);}catch(e){}
  try{if(IDB)IDB.close();}catch(e){}
  var done=false,go=function(){if(done)return;done=true;location.reload();};
- try{var rq=indexedDB.deleteDatabase('kasir-pro-'+u);rq.onsuccess=rq.onerror=rq.onblocked=go;}catch(e){go();}
+ try{var rq=indexedDB.deleteDatabase('kasirn-pro-'+u);rq.onsuccess=rq.onerror=rq.onblocked=go;}catch(e){go();}
  setTimeout(go,1500);}
 
 function usrNewForm(){var T=techs();return{username:'',name:'',role:'teknisi',staffId:T[0]?T[0].id:'',password:'',active:true,edit:false};}
@@ -1728,7 +1728,7 @@ function act(a,el){
   toast('Menguji koneksi…');
   post(SYNC.url,{action:'ping'}).then(function(r){
    if(r&&r.ok&&r.v>=2){
-    if(!hasServer()){toast('Server ditemukan. Silakan masuk dengan akun admin.');setTimeout(function(){try{localStorage.removeItem('kp-auth');}catch(e){}location.reload();},900);}
+    if(!hasServer()){toast('Server ditemukan. Silakan masuk dengan akun admin.');setTimeout(function(){try{localStorage.removeItem('kpn-auth');}catch(e){}location.reload();},900);}
     else{toast('Terhubung ke server. Mengirim data…');syncNow(true);}
    }else toast('Skrip menjawab, tetapi masih versi lama. Tempel Code.gs terbaru lalu Deploy versi baru.');
   }).catch(function(){toast('Tidak dapat menghubungi skrip. Periksa tautan, akses "Anyone", dan internet.');});}
@@ -3394,7 +3394,7 @@ function absProofCard(){
 function absAdminCard(){return absAdminCard0()+absProofCard();}
 function vAbsenOwner(){return'<section class="card stack">'+geoBox()+'</section><section class="card"><span class="small muted">Rekap kehadiran seluruh tim. Owner bisa mengisi/mengoreksi hadir, izin, sakit, atau alpa tiap karyawan.</span></section>'+absAdminCard();}
 /* ===== v10.19: pembaruan otomatis dari GitHub ===== */
-var APP_VER='10.27';
+var APP_VER='10.28';
 function verOf(h){var m=/APP_VER='([^']+)'/.exec(h||'');return m?m[1]:'';}
 var updBusy=false,updLast=0;
 function applyUpdate(){
@@ -3656,13 +3656,13 @@ function logAct(a,d){
  if(!AUTH||AUTH.local||isTech())return;
  LOGQ.push({a:String(a||'').slice(0,60),d:String(d||'').slice(0,280),at:Date.now()});
  if(LOGQ.length>300)LOGQ.splice(0,LOGQ.length-300);
- try{localStorage.setItem('kp-log'+ns(),JSON.stringify(LOGQ));}catch(e){}
+ try{localStorage.setItem('kpn-log'+ns(),JSON.stringify(LOGQ));}catch(e){}
  if(hasServer())scheduleSync(4000);}
 async function logFlush(){
  if(!hasServer()||!LOGQ.length||logBusy)return;
  logBusy=true;
  try{var items=LOGQ.slice(0,50),r=await api({action:'log',items:items});
-  if(r&&r.ok){LOGQ.splice(0,items.length);try{localStorage.setItem('kp-log'+ns(),JSON.stringify(LOGQ));}catch(e){}}}
+  if(r&&r.ok){LOGQ.splice(0,items.length);try{localStorage.setItem('kpn-log'+ns(),JSON.stringify(LOGQ));}catch(e){}}}
  catch(e){}
  logBusy=false;}
 
@@ -4158,7 +4158,7 @@ async function boot(){
  loadPrefs();applyTheme();
  /* Tautan undangan dari admin: ?server=<alamat Apps Script> */
  try{var sv=new URLSearchParams(location.search).get('server');
-  if(sv&&/^https:\/\/script\.google\.com\//.test(sv)){var o0={};try{o0=JSON.parse(localStorage.getItem('kp-sync')||'{}');}catch(e){}o0.url=sv;localStorage.setItem('kp-sync',JSON.stringify(o0));}
+  if(sv&&/^https:\/\/script\.google\.com\//.test(sv)){var o0={};try{o0=JSON.parse(localStorage.getItem('kpn-sync')||'{}');}catch(e){}o0.url=sv;localStorage.setItem('kpn-sync',JSON.stringify(o0));}
   if(location.search)history.replaceState(null,'',location.pathname+location.hash);}catch(e){}
  loadAuth();loadSync();
  if(!AUTH){render();return;}
@@ -4167,9 +4167,9 @@ async function boot(){
  render();
  var rows=[];
  try{IDB=await idbOpen();rows=await idbAll();}
- catch(e){IDB=null;try{var fb=JSON.parse(localStorage.getItem('kp-fallback'+ns())||'{}');Object.keys(fb).forEach(function(k){rows.push({k:k,v:fb[k]});});}catch(x){}}
+ catch(e){IDB=null;try{var fb=JSON.parse(localStorage.getItem('kpn-fallback'+ns())||'{}');Object.keys(fb).forEach(function(k){rows.push({k:k,v:fb[k]});});}catch(x){}}
  rows.forEach(function(r){DOCS[r.k]=r.v;});
- try{LOGQ=JSON.parse(localStorage.getItem('kp-log'+ns())||'[]');if(!Array.isArray(LOGQ))LOGQ=[];}catch(e){LOGQ=[];}
+ try{LOGQ=JSON.parse(localStorage.getItem('kpn-log'+ns())||'[]');if(!Array.isArray(LOGQ))LOGQ=[];}catch(e){LOGQ=[];}
  rebuild();
  if(isAdmin()){snapRates();snapCost();stkSync();rkSchedule();}
  if(isAdmin()){
