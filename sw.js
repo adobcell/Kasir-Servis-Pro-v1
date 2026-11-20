@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kasir-servis-pro-v10.28';
+const CACHE_NAME = 'kasir-servis-pro-v10.31';
 
 const FILES = [
   './',
@@ -36,6 +36,8 @@ self.addEventListener('fetch', event => {
 
   const request = event.request;
   const url = new URL(request.url);
+
+  if (url.pathname.endsWith('/template-url.txt') || url.pathname.endsWith('/google-client-id.txt')) return;
 
   // Untuk halaman HTML: ambil versi paling baru dari server dulu.
   if (
