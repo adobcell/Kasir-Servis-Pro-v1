@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kasir-servis-pro-v10.31';
+const CACHE_NAME = 'kasir-servis-pro-v10.34';
 
 const FILES = [
   './',
