@@ -3439,7 +3439,7 @@ function absProofCard(){
 function absAdminCard(){return absAdminCard0()+absProofCard();}
 function vAbsenOwner(){return'<section class="card stack">'+geoBox()+'</section><section class="card"><span class="small muted">Rekap kehadiran seluruh tim. Owner bisa mengisi/mengoreksi hadir, izin, sakit, atau alpa tiap karyawan.</span></section>'+absAdminCard();}
 /* ===== v10.19: pembaruan otomatis dari GitHub ===== */
-var APP_VER='10.34';
+var APP_VER='10.35';
 function verOf(h){var m=/APP_VER='([^']+)'/.exec(h||'');return m?m[1]:'';}
 var updBusy=false,updLast=0;
 function applyUpdate(){
@@ -3692,7 +3692,7 @@ document.addEventListener('change',function(e){
 });
 
 /* ===== v10.25 (NETRAL): aktivasi lisensi per perangkat (HWID + kode bertanda tangan) ===== */
-var LIC_PUB={"key_ops":["verify"],"ext":true,"kty":"EC","x":"eQxsvGNaab-4F6Ktm6IOuqJEsJu7mOkbL3fyaoTowew","y":"ZcW70LIFRlM-D-YikMO2ixfwYtdYFQrXpd6pEnYPx9U","crv":"P-256"};
+var LIC_PUB={"key_ops":["verify"],"ext":true,"kty":"EC","x":"gukdWpfrTB5marO-DAlz1ACVcjceMNSAe5P7Zp-PyDY","y":"MBuzL6nvUvSZ7Amp4kS4Q-jbSMsVw3Z1fO49eK4hphQ","crv":"P-256"};
 var LIC_ADMIN_WA='6285692139331';
 var LIC={state:(function(){try{return localStorage.getItem('ksp-lic')?'check':'need';}catch(e){return'need';}})(),info:null,err:'',expired:0,form:{nama:'',wa:'',key:''},shown:''};
 var LIC_PLAN={trial:'Trial',bulan:'Pro 1 Bulan',tahun:'Pro 1 Tahun',seumur:'Seumur Hidup',kustom:'Kustom'};
